@@ -48,4 +48,4 @@ jobs:
           name: planck59-uf2
           # RMK 生成的 uf2 文件通常放在项目根目录，文件名取决于你的 keyboard.toml 配置
           # 先列出所有 uf2 文件方便调试，再上传
-          path: 52840_planck59/*.uf2
+          path: 52840_planck59/*.uf2 
