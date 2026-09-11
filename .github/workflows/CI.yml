@@ -33,13 +33,11 @@ jobs:
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
 
-<<<<<<< HEAD
       # 步骤4: 生成 UF2 固件
       - name: Build UF2 firmware
         run: cargo make uf2 --release
         env:
           RUST_MIN_STACK: 16777216
-=======
 
       # 步骤5: 查找并上传 .uf2 文件
       - name: Upload firmware
