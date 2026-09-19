@@ -15,7 +15,7 @@ install_crate = { crate_name = "cargo-binutils", binary = "cargo", test_arg = [
     "--help",
 ] }
 command = "cargo"
-args = ["objcopy", "--release", "--", "-O", "ihex", "rmk-planck59.hex"]
+args = ["objcopy", "--release", "--", "-O", "ihex", "rmk-7angle.hex"]
 dependencies = ["build"]
 
 [tasks.uf2]
