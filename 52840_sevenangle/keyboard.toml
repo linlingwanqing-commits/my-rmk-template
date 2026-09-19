@@ -1,7 +1,7 @@
 # ========== 键盘基础信息 ==========
 [keyboard]
-name = "7angle"                 # 键盘名称
-product_name = "7angle"         # 产品名
+name = "sevenangle"                 # 键盘名称
+product_name = "sevenangle"         # 产品名
 vendor_id = 0x4743              # 厂商 ID（VC）
 product_id = 0x5942             # 产品 ID（BY）
 manufacturer = "RMK"            # 制造商
