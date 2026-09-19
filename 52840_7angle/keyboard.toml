@@ -1,0 +1,139 @@
+# ========== 键盘基础信息 ==========
+[keyboard]
+name = "7angle"                 # 键盘名称
+product_name = "7angle"         # 产品名
+vendor_id = 0x4743              # 厂商 ID（VC）
+product_id = 0x5942             # 产品 ID（BY）
+manufacturer = "RMK"            # 制造商
+chip = "nrf52840"               # 主控芯片型号
+
+# ========== RMK 全局配置 ==========
+[rmk]
+morse_max_num = 9               # 最多可存储的 morse 键数量（上限 256）
+max_patterns_per_key = 36       # 单个 morse 键最多支持的 pattern 数
+
+# ========== Morse（点按/长按/连击）行为 ==========
+[behavior.morse]
+enable_flow_tap = true          # 开启 flow tap（快速连续击键时自动判定为 tap）
+prior_idle_time = "120ms"       # flow tap 触发前需要的空闲时间
+hold_on_other_press = true      # 按住某键时若按下其他键，立即判定为 hold
+hold_timeout = "250ms"          # 长按判定超时时间
+gap_timeout = "250ms"           # 连击间隔超时时间
+
+morses = [
+  # td(0)：单击输出 KpEnter，长按切到第 2 层，tap 后长按输出 CapsLock
+  { tap = "KpEnter", hold = "MO(2)", hold_after_tap = "CapsLock" },
+
+  # td(1)：单击输出 Enter，长按切到第 2 层，tap 后长按输出 NumLock
+  { tap = "Enter", hold = "MO(2)", hold_after_tap = "NumLock" },
+
+  # td(2)：单击输出 Delete，长按输出 RShift
+  { tap = "Delete", hold = "RShift" },
+]
+
+# Morse 行为 profile，可覆盖上面的默认配置
+[behavior.morse.profiles]
+# 适合 home row mod：单边 tap、允许 hold
+HRM = { unilateral_tap = true, permissive_hold = true, hold_timeout = "250ms", gap_timeout = "250ms" }
+# 适合真正的 morse 键：普通模式、非单边 tap
+MRZ = { normal_mode = true, unilateral_tap = false, hold_timeout = "200ms", gap_timeout = "200ms" }
+# 适合拇指区快速修饰键：按下其他键立即 hold
+PN = { hold_on_other_press = true, unilateral_tap = false, hold_timeout = "250ms", gap_timeout = "250ms" }
+
+# ========== 分体配置 ==========
+[split]
+connection = "ble"              # 分体连接方式：ble（无线）或 serial（有线）
+
+# ---- 左手（central，主控半区）----
+[split.central]
+rows = 5                        # 行数
+cols = 10                       # 列数（主键盘 6 列 + 小数字键盘 4 列）
+row_offset = 0                  # 行偏移
+col_offset = 0                  # 列偏移
+
+[split.central.matrix]
+matrix_type = "normal"          # 矩阵类型：normal（普通直连矩阵）
+row_pins = ["P0_24", "P1_00", "P0_11", "P1_04", "P1_06"]                      # 5 个行引脚
+col_pins = ["P0_08", "P0_17", "P0_20", "P0_22", "P0_09", "P0_10", "P1_11", "P1_07", "P1_02", "P1_13"]  # 10 个列引脚
+
+# ---- 右手（peripheral，从半区）----
+[[split.peripheral]]
+rows = 5                        # 行数
+cols = 6                        # 列数（只有主键盘 6 列）
+row_offset = 0                  # 行偏移
+col_offset = 10                 # 列偏移，右手从第 10 列开始接在 layout 里
+
+[split.peripheral.matrix]
+matrix_type = "normal"
+row_pins = ["P0_24", "P1_00", "P0_11", "P1_04", "P1_06"]                      # 右手独立主控，引脚可复用
+col_pins = ["P0_08", "P0_17", "P0_20", "P0_22", "P0_09", "P0_10"]             # 右手只有 6 列
+
+# ========== 布局与键位 ==========
+[layout]
+rows = 5                        # 行数
+cols = 16                       # 总列数 = 左手 10 列 + 右手 6 列
+layers = 4                      # 层数：0~3
+keymap = [
+    # ---- 第 0 层：基础层 ----
+    [
+        # 左手 10 键（主键盘 6 + 小键盘 4），右手 6 键（占位 No）
+        ["Escape", "Kc1", "Kc2", "Kc3", "Kc4", "Kc5", "Kp7", "Kp8", "Kp9", "KpPlus",
+         "No", "No", "No", "No", "No", "No"],
+        ["Tab", "Q", "W", "E", "R", "T", "Kp4", "Kp5", "Kp6", "KpMinus",
+         "No", "No", "No", "No", "No", "No"],
+        ["CapsLock", "A", "S", "D", "F", "G", "Kp1", "Kp2", "Kp3", "KpEnter",
+         "No", "No", "No", "No", "No", "No"],
+        ["LShift", "Z", "X", "C", "V", "B", "Kp0", "KpDot", "KpSlash", "No",
+         "No", "No", "No", "No", "No", "No"],
+        ["LCtrl", "LGui", "No", "LAlt", "No", "Space", "KpAsterisk", "Kp0", "Mo(1)", "No",
+         "No", "No", "No", "No", "No", "No"]
+    ],
+    # ---- 第 1 层：Fn 层 ----
+    [
+        ["Grave", "F1", "F2", "F3", "F4", "F5", "No", "No", "No", "No",
+         "No", "No", "No", "No", "No", "No"],
+        ["No", "No", "No", "No", "No", "No", "No", "No", "No", "No",
+         "No", "No", "No", "No", "No", "No"],
+        ["To(3)", "No", "No", "To(0)", "No", "No", "No", "No", "No", "No",
+         "No", "No", "No", "No", "No", "No"],
+        ["No", "No", "No", "No", "No", "No", "No", "No", "No", "No",
+         "No", "No", "No", "No", "No", "No"],
+        ["No", "No", "No", "No", "No", "No", "No", "No", "No", "No",
+         "No", "No", "No", "No", "No", "No"]
+    ],
+    # ---- 第 2 层：Sleep / PrtSc 层 ----
+    [
+        ["Stop", "No", "No", "No", "No", "No", "No", "No", "No", "PrintScreen",
+         "No", "No", "No", "No", "No", "No"],
+        ["No", "No", "No", "No", "No", "No", "No", "No", "No", "No",
+         "No", "No", "No", "No", "No", "No"],
+        ["No", "No", "No", "No", "No", "No", "No", "No", "No", "No",
+         "No", "No", "No", "No", "No", "No"],
+        ["No", "No", "No", "No", "No", "No", "No", "No", "No", "No",
+         "No", "No", "No", "No", "No", "No"],
+        ["Home", "End", "PageUp", "PageDown", "No", "No", "No", "No", "No", "No",
+         "No", "No", "No", "No", "No", "No"]
+    ],
+    # ---- 第 3 层：数字小键盘层 ----
+    [
+        ["Escape", "KpMinus", "KpPlus", "KpSlash", "Kp1", "Kp2", "Kp3", "Kp4", "Kp5", "Kp6",
+         "No", "No", "No", "No", "No", "No"],
+        ["Kp7", "Kp8", "Kp9", "Tab", "Q", "W", "E", "R", "T", "Y",
+         "No", "No", "No", "No", "No", "No"],
+        ["Kp4", "Kp5", "Kp6", "KpAsterisk", "A", "S", "D", "F", "G", "H",
+         "No", "No", "No", "No", "No", "No"],
+        ["Kp1", "Kp2", "Kp3", "LShift", "Z", "X", "C", "V", "B", "N",
+         "No", "No", "No", "No", "No", "No"],
+        ["Backspace", "KpDot", "Kp0", "LCtrl", "LGui", "Mo(1)", "No", "LAlt", "Space", "Left",
+         "No", "No", "No", "No", "No", "No"]
+    ]
+]
+
+# ========== 蓝牙配置 ==========
+[ble]
+enabled = true                              # 开启 BLE
+battery_adc_pin = "vddh"                    # 电池电压采样引脚（vddh 内部有分压）
+adc_divider_measured = 2000                 # ADC 分压实测值
+adc_divider_total = 2806                    # ADC 分压总值
+default_tx_power = 0                        # 默认发射功率
+ble_use_2m_phy = true                       # 是否启用 2M PHY
