@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 步骤1: 安装 Rust 和 nRF52840 目标架构
+       # 步骤1: 安装 Rust 和 nRF52840 目标架构
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -23,27 +23,26 @@ jobs:
           components: rust-src
 
       # 步骤2: 安装 cargo-make 和 flip-link
-      # RMK 的 uf2 生成依赖 cargo-make，flip-link 是 nRF52840 推荐的链接器
       - name: Install cargo-make and flip-link
         run: |
           cargo install cargo-make
           cargo install flip-link
 
-      # 步骤3: 缓存依赖（可选，但能加速后续构建）
+      # 步骤3: 缓存依赖
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
 
-      # 步骤4: 生成 UF2 固件
+      # 步骤4: 生成 UF2 固件（左右手各一个）
       - name: Build UF2 firmware
         run: cargo make uf2 --release
         env:
           RUST_MIN_STACK: 16777216
 
-      # 步骤5: 查找并上传 .uf2 文件
+      # 步骤5: 上传两个 .uf2 文件
       - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
           name: sevenangle-uf2
-          # RMK 生成的 uf2 文件通常放在项目根目录，文件名取决于你的 keyboard.toml 配置
-          # 先列出所有 uf2 文件方便调试，再上传
-          path: 52840_sevenangle/*.uf2 
+          path: |
+            rmk-7angle-central.uf2
+            rmk-7angle-peripheral.uf2
