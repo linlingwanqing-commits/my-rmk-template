@@ -38,6 +38,17 @@ jobs:
         env:
           RUST_MIN_STACK: 16777216
 
+      - name: Debug - list all files
+        run: |
+          echo "=== 根目录 ==="
+          ls -la
+          echo "=== 所有 uf2 ==="
+          find . -name "*.uf2" -type f 2>/dev/null
+          echo "=== 所有 hex ==="
+          find . -name "*.hex" -type f 2>/dev/null
+          echo "=== target 目录 ==="
+          find target -name "*.hex" -o -name "*.uf2" 2>/dev/null | head -50
+
       # 步骤5: 上传两个 .uf2 文件
       - name: Upload firmware
         uses: actions/upload-artifact@v4
