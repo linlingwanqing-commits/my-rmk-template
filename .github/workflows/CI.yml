@@ -55,5 +55,5 @@ jobs:
         with:
           name: sevenangle-uf2
           path: |
-            rmk-7angle-central.uf2
-            rmk-7angle-peripheral.uf2 
+                 rmk-7angle-central.uf2
+                 rmk-7angle-peripheral.uf2 
